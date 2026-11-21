@@ -370,13 +370,12 @@ function TabMethods:CreateButton(o)
 		BorderSizePixel = 0,
 	}, self.Page)
 	corner(f, 12)
-	local g
 	if outline then
 		paint(win, f, "BackgroundColor3", "Element")
 		local s = create("UIStroke", { Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, f)
 		paint(win, s, "Color", "Accent")
 	else
-		g = gradient(win, f, 0)
+		paint(win, f, "BackgroundColor3", "Accent")
 	end
 
 	local l = create("TextLabel", {
@@ -404,19 +403,11 @@ function TabMethods:CreateButton(o)
 
 	local uiScale = create("UIScale", { Scale = 1 }, f)
 	b.MouseEnter:Connect(function()
-		if g then
-			tween(g, { Rotation = 20 }, 0.4)
-		else
-			tween(f, { BackgroundColor3 = Theme.ElementHover }, 0.2)
-		end
+		tween(f, { BackgroundColor3 = outline and Theme.ElementHover or Theme.Accent2 }, 0.2)
 		tween(uiScale, { Scale = 1.015 }, 0.25)
 	end)
 	b.MouseLeave:Connect(function()
-		if g then
-			tween(g, { Rotation = 0 }, 0.4)
-		else
-			tween(f, { BackgroundColor3 = Theme.Element }, 0.25)
-		end
+		tween(f, { BackgroundColor3 = outline and Theme.Element or Theme.Accent }, 0.25)
 		tween(uiScale, { Scale = 1 }, 0.3, Enum.EasingStyle.Back)
 	end)
 	b.MouseButton1Down:Connect(function()
@@ -468,7 +459,7 @@ function TabMethods:CreateToggle(o)
 		ZIndex = 3,
 	}, track)
 	corner(fill, 11)
-	gradient(win, fill, 0)
+	paint(win, fill, "BackgroundColor3", "Accent")
 	local knob = create("Frame", {
 		AnchorPoint = Vector2.new(0, 0.5),
 		Position = UDim2.new(0, 4, 0.5, 0),
@@ -558,7 +549,7 @@ function TabMethods:CreateSlider(o)
 		BorderSizePixel = 0,
 	}, bar)
 	corner(fill, 4)
-	gradient(win, fill, 0)
+	paint(win, fill, "BackgroundColor3", "Accent")
 	local knob = create("Frame", {
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0, 0.5),
@@ -956,37 +947,12 @@ function Library:CreateWindow(o)
 		Size = UDim2.new(1, 0, 0, HEADER),
 		BorderSizePixel = 0,
 	}, main)
-	local topGrad = gradient(Window, top, 0)
-	topGrad.Offset = Vector2.new(-0.25, 0)
-	local sweep = TweenService:Create(
-		topGrad,
-		TweenInfo.new(5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
-		{ Offset = Vector2.new(0.25, 0) }
-	)
-	sweep:Play()
-
-	local logo = create("Frame", {
-		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0, 14, 0.5, 0),
-		Size = UDim2.fromOffset(22, 22),
-		BackgroundColor3 = WHITE,
-		BackgroundTransparency = 0.78,
-		BorderSizePixel = 0,
-	}, top)
-	corner(logo, 7)
-	local logoDot = create("Frame", {
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.fromOffset(8, 8),
-		BackgroundColor3 = WHITE,
-		BorderSizePixel = 0,
-	}, logo)
-	corner(logoDot, 4)
+	paint(Window, top, "BackgroundColor3", "Accent")
 
 	local hasSub = o.Subtitle ~= nil and o.Subtitle ~= ""
 	local title = create("TextLabel", {
-		Position = UDim2.fromOffset(46, hasSub and 6 or 0),
-		Size = UDim2.new(1, -130, 0, hasSub and 20 or HEADER),
+		Position = UDim2.fromOffset(16, hasSub and 6 or 0),
+		Size = UDim2.new(1, -96, 0, hasSub and 20 or HEADER),
 		BackgroundTransparency = 1,
 		Text = o.Title or "SmoothUI",
 		TextSize = 15,
@@ -998,8 +964,8 @@ function Library:CreateWindow(o)
 	}, top)
 	if hasSub then
 		create("TextLabel", {
-			Position = UDim2.fromOffset(46, 25),
-			Size = UDim2.new(1, -130, 0, 14),
+			Position = UDim2.fromOffset(16, 25),
+			Size = UDim2.new(1, -96, 0, 14),
 			BackgroundTransparency = 1,
 			Text = o.Subtitle,
 			TextSize = 11,
@@ -1175,7 +1141,6 @@ function Library:CreateWindow(o)
 	end
 
 	function Window:Destroy()
-		sweep:Cancel()
 		tween(main, { GroupTransparency = 1 }, 0.3)
 		tween(scale, { Scale = 0.8 }, 0.35, Enum.EasingStyle.Back, Enum.EasingDirection.In)
 		task.delay(0.36, function()
@@ -1254,7 +1219,7 @@ function Library:CreateWindow(o)
 			Size = UDim2.new(1, 0, 0, 3),
 			BorderSizePixel = 0,
 		}, t)
-		gradient(self, bar, 0)
+		paint(self, bar, "BackgroundColor3", "Accent")
 		tween(t, { Size = UDim2.new(1, 0, 0, 66), GroupTransparency = 0 }, 0.45, Enum.EasingStyle.Back)
 		tween(bar, { Size = UDim2.new(0, 0, 0, 3) }, dur, Enum.EasingStyle.Linear)
 		task.delay(dur, function()
@@ -1281,7 +1246,7 @@ function Library:CreateWindow(o)
 		}, tabScroll)
 		corner(btn, 15)
 		create("UIPadding", { PaddingLeft = UDim.new(0, 16), PaddingRight = UDim.new(0, 16) }, btn)
-		gradient(self, btn, 0)
+		paint(self, btn, "BackgroundColor3", "Accent")
 
 		local page = create("ScrollingFrame", {
 			Size = UDim2.fromScale(1, 1),
