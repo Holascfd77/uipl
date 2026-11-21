@@ -277,7 +277,7 @@ local function interactive(win, frame, button)
 		ZIndex = 0,
 	}, frame)
 	corner(flash, 10)
-	gradient(win, flash, 0)
+	paint(win, flash, "BackgroundColor3", "Accent")
 
 	button.MouseEnter:Connect(function()
 		tween(frame, { BackgroundColor3 = Theme.ElementHover }, 0.2)
@@ -312,11 +312,6 @@ local function newElement(win, page, height, colorKey)
 	paint(win, f, "BackgroundColor3", colorKey or "Element")
 	corner(f, 10)
 	stroke(win, f)
-	-- brillo suave arriba
-	create("UIGradient", {
-		Color = ColorSequence.new(WHITE, Color3.fromRGB(205, 205, 205)),
-		Rotation = 90,
-	}, f)
 	return f
 end
 
@@ -343,11 +338,7 @@ function TabMethods:CreateSection(text)
 		Size = UDim2.new(1, 0, 0, 1),
 		BorderSizePixel = 0,
 	}, f)
-	local g = gradient(win, line, 0)
-	g.Transparency = NumberSequence.new({
-		NumberSequenceKeypoint.new(0, 0),
-		NumberSequenceKeypoint.new(1, 1),
-	})
+	paint(win, line, "BackgroundColor3", "Stroke")
 	local obj = {}
 	function obj:Set(t)
 		l.Text = string.upper(t)
@@ -383,7 +374,7 @@ function TabMethods:CreateButton(o)
 	if outline then
 		paint(win, f, "BackgroundColor3", "Element")
 		local s = create("UIStroke", { Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, f)
-		makeGradient(win, s, 0)
+		paint(win, s, "Color", "Accent")
 	else
 		g = gradient(win, f, 0)
 	end
@@ -545,7 +536,7 @@ function TabMethods:CreateSlider(o)
 		TextXAlignment = Enum.TextXAlignment.Right,
 		TextYAlignment = Enum.TextYAlignment.Center,
 	}, f)
-	makeGradient(win, valLabel, 0) -- valor con gradiente
+	paint(win, valLabel, "TextColor3", "Accent")
 
 	local area = create("TextButton", {
 		Position = UDim2.fromOffset(14, 32),
@@ -577,7 +568,7 @@ function TabMethods:CreateSlider(o)
 	}, bar)
 	corner(knob, 7)
 	local knobStroke = create("UIStroke", { Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, knob)
-	makeGradient(win, knobStroke, 45)
+	paint(win, knobStroke, "Color", "Accent")
 
 	local obj = {}
 	local function render()
@@ -664,7 +655,7 @@ function TabMethods:CreateDropdown(o)
 		TextTruncate = Enum.TextTruncate.AtEnd,
 		ZIndex = 2,
 	}, f)
-	makeGradient(win, valLabel, 0)
+	paint(win, valLabel, "TextColor3", "Accent")
 	local arrow = textLabel(win, f, "v", 12, "Accent", Enum.Font.GothamBold)
 	arrow.AnchorPoint = Vector2.new(0.5, 0.5)
 	arrow.Position = UDim2.new(1, -20, 0, ROW / 2)
@@ -795,7 +786,7 @@ function TabMethods:CreateList(o)
 		ZIndex = 2,
 	}, f)
 	corner(dot, 4)
-	gradient(win, dot, 45)
+	paint(win, dot, "BackgroundColor3", "Accent")
 
 	local name = textLabel(win, f, o.Name or "List", 13, "Text", Enum.Font.GothamBold)
 	name.Position = UDim2.fromOffset(30, 0)
@@ -815,11 +806,7 @@ function TabMethods:CreateList(o)
 		BackgroundTransparency = 0.4,
 		BorderSizePixel = 0,
 	}, f)
-	local lg = gradient(win, line, 0)
-	lg.Transparency = NumberSequence.new({
-		NumberSequenceKeypoint.new(0, 0),
-		NumberSequenceKeypoint.new(1, 1),
-	})
+	paint(win, line, "BackgroundColor3", "Stroke")
 
 	local content = create("Frame", {
 		Position = UDim2.fromOffset(0, ROW + 6),
@@ -962,12 +949,7 @@ function Library:CreateWindow(o)
 	}, holder)
 	paint(Window, main, "BackgroundColor3", "Background")
 	corner(main, 16)
-	local mainStroke = create("UIStroke", { Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, main)
-	makeGradient(Window, mainStroke, 45)
-	create("UIGradient", {
-		Color = ColorSequence.new(WHITE, Color3.fromRGB(215, 215, 215)),
-		Rotation = 90,
-	}, main)
+	stroke(Window, main)
 
 	-- cabecera con gradiente animado
 	local top = create("Frame", {
@@ -1097,10 +1079,9 @@ function Library:CreateWindow(o)
 		AnchorPoint = Vector2.new(0, 1),
 		Position = UDim2.fromScale(0, 1),
 		Size = UDim2.new(1, 0, 0, 1),
-		BackgroundTransparency = 0.55,
 		BorderSizePixel = 0,
 	}, tabBar)
-	gradient(Window, tabLine, 0)
+	paint(Window, tabLine, "BackgroundColor3", "Stroke")
 
 	local pages = create("Frame", {
 		Position = UDim2.fromOffset(0, TABS),
@@ -1249,7 +1230,7 @@ function Library:CreateWindow(o)
 		paint(self, t, "BackgroundColor3", "Element")
 		corner(t, 12)
 		local ts = create("UIStroke", { Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, t)
-		makeGradient(self, ts, 45)
+		paint(self, ts, "Color", "Stroke")
 		local tt = create("TextLabel", {
 			Position = UDim2.fromOffset(14, 8),
 			Size = UDim2.new(1, -28, 0, 18),
@@ -1261,7 +1242,7 @@ function Library:CreateWindow(o)
 			TextXAlignment = Enum.TextXAlignment.Left,
 			TextYAlignment = Enum.TextYAlignment.Center,
 		}, t)
-		makeGradient(self, tt, 0)
+		paint(self, tt, "TextColor3", "Text")
 		local tc = textLabel(self, t, n.Content or "", 12, "SubText", Enum.Font.Gotham)
 		tc.Position = UDim2.fromOffset(14, 27)
 		tc.Size = UDim2.new(1, -28, 0, 28)
